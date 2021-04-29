@@ -36,6 +36,119 @@ class AccountMove(models.Model):
     zip_shipping_id = fields.Many2one(
         'res.city.zip', string='Ubicación zip entrega',compute='_compute_partner_delivery_zip_shipping')
     
+    @api.onchange('currency_id')
+    def compute_date_life(self):
+        c=0
+        for lines in self.invoice_line_ids:
+            exp_dates=[]
+            line = lines.lot_id.replace("\n","")
+            line = line.split(",")
+            line_exp = lines.life_date.replace("\n","")
+            line_exp = line_exp.split(",")
+            logger.info('******************************************exp_dates*****************************')
+            logger.info(line)
+            """
+            if len(line_exp) >=2:
+                for line in line_exp:
+                    logger.info('******************************************exp_dates*****************************')
+                    logger.info(line)
+                    exp_dates.append(line)
+            else:
+                logger.info('******************************************exp_dates*****************************')
+                logger.info(line_exp[0])
+                exp_dates.append(line_exp[0])
+            """
+            
+            if len(line)>=2:
+                for lot in line:
+                    logger.info('******************************************1*****************************')
+                    logger.info(line)
+                    logger.info('******************************************2*****************************')
+                    logger.info(line)
+                    lot=str(lot)
+                    logger.info(lot)
+                    lot=lot.split(" ")
+                    logger.info(lot)
+                    lines.write({'lot_segment': lot[0]})
+                        
+            else:
+                lines.write({'lot_segment': line[0]})
+        
+        """
+        #exp_dates=sorted(set(exp_dates))
+        
+        
+        logger.info('******************************************exp_dates*****************************')
+        logger.info(exp_dates)
+        c=0
+        logger.info('******************************************exp_dates*****************************')
+        logger.info(len(self.invoice_line_ids))
+        if c <= len(self.invoice_line_ids):
+            for date_life in self.invoice_line_ids:
+                date_life.write({'lot_exp': exp_dates[c]})
+                c=c+1
+        """
+                
+    """
+    @api.model
+    def create(self, vals):
+        res = super(AccountMove, self).create(vals)
+        logger.info('******************************************CREATE DE ACCOUNT*****************************')
+        logger.info(self)
+        logger.info(res)
+        for lines in res.invoice_line_ids:
+            logger.info('******************************************LOT ID*****************************')
+            logger.info(lines.lot_id)
+            line = lines.lot_id.replace("\n","")
+            line = line.split(",")
+            line_exp = lines.life_date.replace("\n","")
+            line_exp = line_exp.split(",")
+            logger.info('******************************************TAMAÑO LINEAS*****************************')
+            logger.info(len(line_exp))
+            logger.info(len(line))
+            
+            
+            if len(line)>=2:
+                for lot in line:
+                    for lot_exp in line_exp:
+                        if str(lines.quantity) in lot:
+                            logger.info('******************************************LOT ID PASA*****************************')
+                            logger.info(lot)
+                            lot=str(lot)
+                            logger.info(lot)
+                            lot=lot.split(" ")
+                            logger.info(lot)
+                            lines.write({'lot_segment': lot[0] })
+            else:
+                lines.write({'lot_segment': line[0]})
+
+        return res
+    """
+    """
+    @api.depends('date','write_date')
+    def _compute_lot_id(self):
+        for lines in self.invoice_line_ids:
+            logger.info('******************************************LOT ID*****************************')
+            logger.info(lines.lot_id)
+            line = lines.lot_id.replace("\n","")
+            line = line.split(",")
+            logger.info(line)
+            logger.info(len(line))
+            if len(line)>=2:
+                for lot in line:
+                    if str(lines.quantity) in lot:
+                        logger.info('******************************************LOT ID PASA*****************************')
+                        logger.info(lot)
+                        lot=str(lot)
+                        logger.info(lot)
+                        lot=lot.split(" ")
+                        logger.info(lot)
+                        lines.write({'lot_segment': lot[0] })
+            else:
+                lines.write({'lot_segment': line[0]})
+    """
+                    
+    
     @api.onchange('partner_shipping_id')
     def _compute_partner_delivery_zip_shipping(self):
         for record in self:
@@ -123,6 +236,9 @@ class AccountMoveLineInherit(models.Model):
     x_invima = fields.Char('Código Invima', compute='_calculate_fields_product')
     x_atc = fields.Char('Código ATC', compute='_calculate_fields_product')
     removal_date = fields.Date('Fecha de vencimiento')
+    lot_segment = fields.Char('Lote')
+    lot_exp = fields.Char('Fecha Vencimiento')
+    
 
     def _sale_can_be_reinvoice(self):
         self.ensure_one()
@@ -154,8 +270,4 @@ class AccountMoveLineInherit(models.Model):
                 record.x_cum = False
                 record.x_invima = False
                 record.x_atc = False
-                
-    
-                
-            
             
