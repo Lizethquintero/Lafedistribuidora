@@ -37,7 +37,16 @@
                                         <br>Telf.: <span style="font-size: 11px;" t-field="o.partner_id.mobile"/> - <span style="font-size: 11;" t-field="o.partner_id.phone"/></br>
                                         <br>Email: <span style="font-size: 11px;" t-field="o.partner_id.email"/></br>
                                         <br><span style="font-size: 11px;" t-field="o.partner_id.city"/> - <span style="font-size: 11;" t-field="o.partner_id.state_id.name"/></br>
+                                    </div>
+                                    <br></br>
+                                    <div name="invoice_address_shipping" style="font-size: 11px;">
+                                        <b><span style="font-size: 14;">DATOS DE ENTREGA:</span></b>
+                                        <br>Dirección: <span style="font-size: 11px;" t-field="o.delivery_adress_shipping"/><span style="font-size: 11px;" t-field="o.partner_id.street2"/></br>
+                                        <br><span style="font-size: 11px;" t-field="o.partner_id.city"/> <span style="font-size: 11px;" t-field="o.partner_id.state_id.name"/></br>
+                                        <br>Telf: <span style="font-size: 11px;" t-field="o.partner_id.mobile"/> - <span style="font-size: 11px;" t-field="o.partner_id.phone"/></br>
                                     </div> 
+                                    <br></br>
+                
                                 </td>
                                 <td colspan="8" align="right" style="border-top-color: white;">
                                     <b><span style="font-size: 16;" t-if="o.type == 'out_invoice' and (o.state == 'open' or o.state == 'paid')">FACTURA DE VENTA</span></b>
@@ -96,13 +105,13 @@
                                 <t t-set="lot_values" t-value="o._get_invoiced_lot_values()"/>
                                 <!--<t t-if="lot_values">-->
                                 <td>
-                                    <t t-if="l.lot_id">
-                                        <span style="font-size: 11px;" t-esc="l.lot_id"/>
+                                    <t t-if="l.lot_segment">
+                                        <span style="font-size: 11px;" t-esc="l.lot_segment"/>
                                     </t>
                                 </td>
                                 <td>
-                                    <t t-if="l.life_date">
-                                        <span style="font-size: 11px;" t-esc="l.life_date"/>
+                                    <t t-if="l.lot_exp">
+                                        <span style="font-size: 11px;" t-esc="l.lot_exp"/>
                                     </t>
                                 </td>
                                 <td>
